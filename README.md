@@ -45,7 +45,8 @@ export class InitScene extends Phaser.Scene {
   }
 
   async preload() {
-    await ImageHelper.init(this, [
+    // This can be called later on again for more images if needed.
+    await ImageHelper.load(this, [
       { key: "ball", url: "assets/ball.png" },
       { key: "hero", url: "assets/hero.png" },
     ]);
@@ -94,7 +95,7 @@ image.src = ImageHelper.url("ball");
 You can slice a spritesheet into individual images using a defined grid and `pos`.
 
 ```ts
-await ImageHelper.init(scene, [
+await ImageHelper.load(scene, [
   {
     key: "spritesheet",
     url: "assets/spritesheet.png",
@@ -113,7 +114,7 @@ await ImageHelper.init(scene, [
 Use a start and end `pos` range:
 
 ```ts
-await ImageHelper.init(scene, [
+await ImageHelper.load(scene, [
   {
     key: "spritesheet",
     url: "assets/spritesheet.png",
@@ -126,7 +127,7 @@ await ImageHelper.init(scene, [
 Or use exact rectangle coordinates:
 
 ```ts
-await ImageHelper.init(scene, [
+await ImageHelper.load(scene, [
   {
     key: "spritesheet",
     url: "assets/spritesheet.png",
@@ -140,7 +141,7 @@ await ImageHelper.init(scene, [
 ## Nine-Slice Support
 
 ```ts
-await ImageHelper.init(scene, [
+await ImageHelper.load(scene, [
   {
     key: "nineslice_button",
     url: "assets/nineslice_button.png",
@@ -213,7 +214,7 @@ const config = ImageHelper.nineSliceData("nineslice_button");
 Link extruded and normal maps directly to the same asset key:
 
 ```ts
-await ImageHelper.init(scene, [
+await ImageHelper.load(scene, [
   {
     key: "spritesheet",
     url: "assets/spritesheet.png",
@@ -224,6 +225,16 @@ await ImageHelper.init(scene, [
 ```
 
 This will automatically generate `spritesheet_extruded` and `spritesheet_normal` keys for use.
+
+## Removing an image
+
+```typescript
+// Remove an image by the key
+ImageHelper.remove("image_key");
+
+// Clear all images and the cache
+ImageHelper.clear();
+```
 
 ---
 

@@ -17,6 +17,7 @@ export class ImageHelper {
 
   private static scene: Phaser.Scene;
   private static imagesData: IMAGE_DATA[] = [];
+  private static imagesToLoad: IMAGE_DATA[] = [];
   private static imageCache: Record<string, string> = {};
   private static textureCache: Record<string, HTMLImageElement> = {};
 
@@ -29,12 +30,14 @@ export class ImageHelper {
     this.scene = scene;
   }
 
-  public static async init(scene: Phaser.Scene, images: IMAGE_DATA[]) {
+  public static async load(scene: Phaser.Scene, images: IMAGE_DATA[]) {
     this.scene = scene;
-    this.imagesData = images;
+    this.isInitialized = false;
+
+    this.imagesToLoad = images;
 
     // Start loading images to phaser scene
-    await this.load();
+    await this.loadImages();
 
     // Create required url to use in html
     await this.prepareDataUrls();
@@ -72,6 +75,35 @@ export class ImageHelper {
     }
 
     return data;
+  }
+
+  // Remove image from cache
+  public static remove(key: string) {
+    this.scene.textures.remove(key);
+
+    delete this.imageCache[key];
+    delete this.imageCache[`${key}_${EXTRUDED_SUFFIX}`];
+    delete this.imageCache[`${key}_${NORMAL_SUFFIX}`];
+
+    delete this.nineSliceDataCache[key];
+  }
+
+  // Clear all images from cache
+  public static clear() {
+    this.imagesData.forEach((image) => {
+      if (image.parse) {
+        image.parse.forEach((parse) => {
+          this.remove(parse.key);
+        });
+      }
+      this.remove(image.key);
+    });
+
+    this.imagesData = [];
+    this.imagesToLoad = [];
+    this.imageCache = {};
+    this.textureCache = {};
+    this.nineSliceDataCache = {};
   }
 
   // Get nine slice
@@ -131,12 +163,12 @@ export class ImageHelper {
   // ------------------------------------------------------------
 
   // Load all images async
-  private static async load() {
+  private static async loadImages() {
     // Prepare promis array to load images in parallel
     const loadArray: Promise<void>[] = [];
 
     // Load images in parallel
-    this.imagesData.forEach((image) => {
+    this.imagesToLoad.forEach((image) => {
       loadArray.push(this.loadImage(image.key, image.url));
 
       if (image.extruded) {
@@ -154,6 +186,8 @@ export class ImageHelper {
 
     // Wait for all images to be loaded
     await Promise.all(loadArray);
+
+    this.imagesData = [...this.imagesData, ...this.imagesToLoad];
 
     // Set load complete flag
     this.isLoadComplete = true;
