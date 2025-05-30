@@ -33,6 +33,7 @@ export class ImageHelper {
   public static async load(scene: Phaser.Scene, images: IMAGE_DATA[]) {
     this.scene = scene;
     this.isInitialized = false;
+    this.isLoadComplete = false;
 
     this.imagesToLoad = images;
 
