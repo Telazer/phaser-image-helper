@@ -22,6 +22,18 @@ export type IMAGE_NINE_SLICE = {
   pixelated?: boolean;
   fill?: "repeat" | "stretch";
   scale?: string;
+  safeZone?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
+  deadZone?: {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  };
 };
 
 export interface IMAGE_NINE_SLICE_DATA extends IMAGE_NINE_SLICE {

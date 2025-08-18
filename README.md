@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/Telazer/phaser-image-helper)
 
-A TypeScript utility library for [Phaser 3](https://phaser.io) that simplifies image handling and manipulation. It offers powerful helpers for:
+A TypeScript utility library for [Phaser 4](https://phaser.io) that simplifies image handling and manipulation. It offers powerful helpers for:
 
 - Efficient image loading and caching
 - Nine-slice scaling support
@@ -205,6 +205,42 @@ const config = ImageHelper.nineSliceData("nineslice_button");
     },
   ],
 }
+```
+
+SafeZone and DeadZone Data
+
+> This will keep safeZone and deadZone data inside the image just to provide for other API's
+> As default the safeZone and deadZone will return as eg: `calc(${topHeight} * scale)`, if it's defined, it'll override as `calc(${safeZone.top * scale})`. This way, css padding can be automatically can be used from the image data.
+
+```ts
+await ImageHelper.load(scene, [
+  {
+    key: "nineslice_frame",
+    url: "assets/nineslice_frame.png",
+    nineSlice: {
+      topHeight: 10,
+      centerHeight: 30,
+      bottomHeight: 10,
+      leftWidth: 10,
+      centerWidth: 30,
+      rightWidth: 10,
+      fill: "repeat",
+      scale: "10px",
+      safeZone: {
+        top: 1,
+        left: 1,
+        right: 1,
+        bottom: 1,
+      }
+      deadZone: {
+        top: 5,
+        left: 5,
+        right: 5,
+        bottom: 5,
+      }
+    },
+  },
+]);
 ```
 
 ---
