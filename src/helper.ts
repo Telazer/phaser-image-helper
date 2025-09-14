@@ -7,7 +7,6 @@ import {
   IMAGE_RECT,
   IMAGE_SLICE,
 } from "./types";
-import {sleep} from './sleep';
 
 const EXTRUDED_SUFFIX = "extruded";
 const NORMAL_SUFFIX = "normal";
@@ -45,17 +44,22 @@ export class ImageHelper {
     await this.prepareDataUrls();
 
     this.isInitialized = true;
+
+    return Promise.resolve();
   }
 
   // Check if all initialization is complete
-  public static async isReady(cb: () => void): Promise<void> {
+  public static async isReady(): Promise<void> {
     if (!this.isInitialized) {
       // Prevent memory leak
-      await sleep(100);
-      return this.isReady(cb);
+      await setTimeout(() => {}, 0);
+      return this.isReady();
     }
 
-    cb();
+    // Make sure Phaser completes any pending asynchronous processes
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(), 0);
+    });
   }
 
   // Get image data url
